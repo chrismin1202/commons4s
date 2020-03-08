@@ -18,16 +18,24 @@ import java.nio.{file => jnf}
 import java.{io => jio}
 
 import com.chrism.commons.json.json4s.JsonLetterCase
-import org.json4s.{Formats, JNull, JValue, JsonInput}
+import org.json4s.{Formats, JNothing, JNull, JValue, JsonInput}
 import play.api.libs.json.JsValue
 
-sealed trait JsonWritable[+A] {
+trait JsonWritable[+A] {
+
+  /** Specifies the case to use when serializing in JSON.
+    *
+    * @return the [[JsonLetterCase]] to use
+    */
+  protected def jsonLetterCase: JsonLetterCase
 
   /** Specifies the case used in the class that extends this trait.
     *
-    * @return the [[JsonLetterCase]] used in the class
+    * Override if the class member names are not camelCased.
+    *
+    * @return the [[JsonLetterCase]] used in the class (default: [[JsonLetterCase.Camel]])
     */
-  protected def classLetterCase: JsonLetterCase
+  protected def classLetterCase: JsonLetterCase = JsonLetterCase.Camel
 
   /** Override if JSON serialization needs to be customized.
     *
@@ -79,7 +87,9 @@ sealed trait JsonWritable[+A] {
   final def toPascalCasedJsValue[B >: A](implicit formats: Formats, m: Manifest[B]): JsValue =
     toJsValueWithLetterCase[B](JsonLetterCase.Pascal)(formats, m)
 
-  final def toJson[B >: A](implicit formats: Formats, m: Manifest[B]): String = JsonUtils.writeJValueAsJson(toJValue[B])
+  final def toJson[B >: A](implicit formats: Formats, m: Manifest[B]): String =
+    if (classLetterCase == jsonLetterCase) JsonUtils.writeJValueAsJson(toJValue[B])
+    else JsonUtils.writeJValueAsJsonWithLetterCase(toJValue[B], jsonLetterCase)
 
   final def toJsonWithLetterCase[B >: A](jsonCase: JsonLetterCase)(implicit formats: Formats, m: Manifest[B]): String =
     JsonUtils.writeJValueAsJson(toJValueWithLetterCase[B](jsonCase))
@@ -168,7 +178,7 @@ sealed trait JsonWritable[+A] {
   */
 trait CamelCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Camel
+  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Camel
 }
 
 /** A trait for serializing as JSON in snake_casing.
@@ -178,7 +188,7 @@ trait CamelCasedJsonWritable[+A] extends JsonWritable[A] {
 
 trait SnakeCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Snake
+  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Snake
 }
 
 /** A trait for serializing as JSON in PascalCasing.
@@ -187,16 +197,18 @@ trait SnakeCasedJsonWritable[+A] extends JsonWritable[A] {
   */
 trait PascalCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Pascal
+  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Pascal
 }
 
-sealed trait JsonWritableCompanionLike[A <: JsonWritable[A]] {
+trait JsonWritableCompanionLike[A <: JsonWritable[A]] {
 
   /** Specifies the case used in [[A]].
     *
-    * @return the [[JsonLetterCase]] used in [[A]]
+    * Override if the class member names are not camelCased.
+    *
+    * @return the [[JsonLetterCase]] used in [[A]] (default: [[JsonLetterCase.Camel]])
     */
-  protected def classLetterCase: JsonLetterCase
+  protected def classLetterCase: JsonLetterCase = JsonLetterCase.Camel
 
   final def fromJValueOrNone(jv: JValue)(implicit formats: Formats, m: Manifest[A]): Option[A] = jv.extractOpt[A]
 
@@ -221,9 +233,8 @@ sealed trait JsonWritableCompanionLike[A <: JsonWritable[A]] {
 
   final def fromJValue(jv: JValue)(implicit formats: Formats, m: Manifest[A]): A =
     jv match {
-      case null  => null.asInstanceOf[A]
-      case JNull => null.asInstanceOf[A]
-      case other => other.extract[A]
+      case null | JNull | JNothing => null.asInstanceOf[A]
+      case other                   => classLetterCase.format(other).extract[A]
     }
 
   final def fromJValueWithLetterCase(
@@ -605,34 +616,4 @@ sealed trait JsonWritableCompanionLike[A <: JsonWritable[A]] {
 
   final def fromPascalCasedResource(resourcePath: String)(implicit formats: Formats, m: Manifest[A]): A =
     fromResourceWithLetterCase(resourcePath, JsonLetterCase.Pascal)
-}
-
-/** A trait intended for the companion object of [[A]] that deserializes JSON.
-  * It assumes that the members in [[A]] are camelCased.
-  *
-  * @tparam A a case class with its members in camelCase
-  */
-trait CamelCasedJsonWritableCompanionLike[A <: CamelCasedJsonWritable[A]] extends JsonWritableCompanionLike[A] {
-
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Camel
-}
-
-/** A trait intended for the companion object of [[A]] that deserializes JSON.
-  * It assumes that the members in [[A]] are snake_cased.
-  *
-  * @tparam A a case class with its members in snake_case
-  */
-trait SnakeCasedJsonWritableCompanionLike[A <: SnakeCasedJsonWritable[A]] extends JsonWritableCompanionLike[A] {
-
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Snake
-}
-
-/** A trait intended for the companion object of [[A]] that deserializes JSON.
-  * It assumes that the members in [[A]] are PascalCased.
-  *
-  * @tparam A a case class with its members in PascalCase
-  */
-trait PascalCasedJsonWritableCompanionLike[A <: PascalCasedJsonWritable[A]] extends JsonWritableCompanionLike[A] {
-
-  override protected final val classLetterCase: JsonLetterCase = JsonLetterCase.Pascal
 }

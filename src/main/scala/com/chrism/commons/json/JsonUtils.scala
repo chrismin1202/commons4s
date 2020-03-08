@@ -57,8 +57,7 @@ object JsonUtils {
   ): Option[JValue] =
     nonEmptyJsonInputOrNone(json)
       .flatMap(
-        JsonMethods.parseOpt(_, useBigDecimalForDouble = useBigDecimalForDouble, useBigIntForLong = useBigIntForLong)
-      )
+        JsonMethods.parseOpt(_, useBigDecimalForDouble = useBigDecimalForDouble, useBigIntForLong = useBigIntForLong))
 
   def fromJson(json: String, useBigDecimalForDouble: Boolean = true, useBigIntForLong: Boolean = true): JValue =
     fromJsonInput(json, useBigDecimalForDouble = useBigDecimalForDouble, useBigIntForLong = useBigIntForLong)

@@ -211,7 +211,7 @@ private[this] object JsonWritableTest {
 
   private final case class SimpleDummy(fieldA: String, fieldB: Int) extends CamelCasedJsonWritable[SimpleDummy]
 
-  private object SimpleDummy extends CamelCasedJsonWritableCompanionLike[SimpleDummy]
+  private object SimpleDummy extends JsonWritableCompanionLike[SimpleDummy]
 
   private final case class Dummy23(
     intField1: Int,
@@ -239,7 +239,7 @@ private[this] object JsonWritableTest {
     intField23: Int)
       extends CamelCasedJsonWritable[Dummy23]
 
-  private object Dummy23 extends CamelCasedJsonWritableCompanionLike[Dummy23]
+  private object Dummy23 extends JsonWritableCompanionLike[Dummy23]
 
   private final case class OptionDummy(
     name: String,
@@ -248,11 +248,11 @@ private[this] object JsonWritableTest {
     doubleValue: Option[Double] = None)
       extends CamelCasedJsonWritable[OptionDummy]
 
-  private object OptionDummy extends CamelCasedJsonWritableCompanionLike[OptionDummy]
+  private object OptionDummy extends JsonWritableCompanionLike[OptionDummy]
 
   private final case class SeqDummy(seq: Option[Seq[String]]) extends CamelCasedJsonWritable[SeqDummy]
 
-  private object SeqDummy extends CamelCasedJsonWritableCompanionLike[SeqDummy]
+  private object SeqDummy extends JsonWritableCompanionLike[SeqDummy]
 
   private case object SeqDummySerializer
       extends CustomSerializer[SeqDummy](_ =>
@@ -267,7 +267,6 @@ private[this] object JsonWritableTest {
         }, {
           case seq: SeqDummy =>
             seq.seq.filter(_.nonEmpty).map(_.map(JString(_))).map(_.toList).map(JArray(_)).getOrElse(JNull)
-        })
-      )
+        }))
 
 }

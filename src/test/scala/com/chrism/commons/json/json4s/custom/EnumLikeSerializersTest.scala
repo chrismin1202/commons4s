@@ -17,7 +17,7 @@ package com.chrism.commons.json.json4s.custom
 import com.chrism.commons.FunTestSuite
 import com.chrism.commons.datatype.{CaseInsensitiveEnumLikeCompanionLike, EnumWithOrdinalLike}
 import com.chrism.commons.json.json4s.Json4sFormats
-import com.chrism.commons.json.{CamelCasedJsonWritable, CamelCasedJsonWritableCompanionLike, JsonUtils}
+import com.chrism.commons.json.{JsonUtils, JsonWritableCompanionLike, SnakeCasedJsonWritable}
 import org.json4s.{Formats, JInt, JObject}
 
 final class EnumLikeSerializersTest extends FunTestSuite {
@@ -27,19 +27,20 @@ final class EnumLikeSerializersTest extends FunTestSuite {
   test("serializing EnumLike with name") {
     implicit val formats: Formats = Json4sFormats.defaultFormats + Employee.nameSerializer
 
-    assert(PiedPiper(ErlichBachman).toJson === """{"employee":"ErlichBachman"}""")
-    assert(PiedPiper(RichardHendricks).toJson === """{"employee":"RichardHendricks"}""")
-    assert(PiedPiper(BertramGilfoyle).toJson === """{"employee":"BertramGilfoyle"}""")
-    assert(PiedPiper(DineshChugtai).toJson === """{"employee":"DineshChugtai"}""")
+    assert(PiedPiper(ErlichBachman).toJson === """{"employee_with_equity":"ErlichBachman"}""")
+    assert(PiedPiper(RichardHendricks).toJson === """{"employee_with_equity":"RichardHendricks"}""")
+    assert(PiedPiper(BertramGilfoyle).toJson === """{"employee_with_equity":"BertramGilfoyle"}""")
+    assert(PiedPiper(DineshChugtai).toJson === """{"employee_with_equity":"DineshChugtai"}""")
   }
 
   test("deserializing EnumLike with name") {
     implicit val formats: Formats = Json4sFormats.defaultFormats + Employee.nameSerializer
 
-    assert(PiedPiper.fromJson("""{"employee": "ErlichBachman"}""").employee === ErlichBachman)
-    assert(PiedPiper.fromJson("""{"employee": "richardHendricks"}""").employee === RichardHendricks)
-    assert(PiedPiper.fromJson("""{"employee": "BertramGILFOYLE"}""").employee === BertramGilfoyle)
-    assert(PiedPiper.fromJson("""{"employee": "dineshchugtai"}""").employee === DineshChugtai)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": "ErlichBachman"}""").employeeWithEquity === ErlichBachman)
+    assert(
+      PiedPiper.fromJson("""{"employee_with_equity": "richardHendricks"}""").employeeWithEquity === RichardHendricks)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": "BertramGILFOYLE"}""").employeeWithEquity === BertramGilfoyle)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": "dineshchugtai"}""").employeeWithEquity === DineshChugtai)
   }
 
   test("serializing EnumLike as key with name") {
@@ -73,19 +74,19 @@ final class EnumLikeSerializersTest extends FunTestSuite {
   test("serializing EnumLike with ordinal") {
     implicit val formats: Formats = Json4sFormats.defaultFormats + Employee.ordinalSerializer
 
-    assert(PiedPiper(ErlichBachman).toJson === """{"employee":1}""")
-    assert(PiedPiper(RichardHendricks).toJson === """{"employee":2}""")
-    assert(PiedPiper(BertramGilfoyle).toJson === """{"employee":3}""")
-    assert(PiedPiper(DineshChugtai).toJson === """{"employee":4}""")
+    assert(PiedPiper(ErlichBachman).toJson === """{"employee_with_equity":1}""")
+    assert(PiedPiper(RichardHendricks).toJson === """{"employee_with_equity":2}""")
+    assert(PiedPiper(BertramGilfoyle).toJson === """{"employee_with_equity":3}""")
+    assert(PiedPiper(DineshChugtai).toJson === """{"employee_with_equity":4}""")
   }
 
   test("deserializing EnumLike with ordinal") {
     implicit val formats: Formats = Json4sFormats.defaultFormats + Employee.ordinalSerializer
 
-    assert(PiedPiper.fromJson("""{"employee": 1}""").employee === ErlichBachman)
-    assert(PiedPiper.fromJson("""{"employee": 2}""").employee === RichardHendricks)
-    assert(PiedPiper.fromJson("""{"employee": 3}""").employee === BertramGilfoyle)
-    assert(PiedPiper.fromJson("""{"employee": 4}""").employee === DineshChugtai)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": 1}""").employeeWithEquity === ErlichBachman)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": 2}""").employeeWithEquity === RichardHendricks)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": 3}""").employeeWithEquity === BertramGilfoyle)
+    assert(PiedPiper.fromJson("""{"employee_with_equity": 4}""").employeeWithEquity === DineshChugtai)
   }
 
   test("serializing EnumLike as key with ordinal") {
@@ -156,7 +157,7 @@ private[this] object EnumLikeSerializersTest {
 
   private case object DineshChugtai extends Employee("DineshChugtai", 4)
 
-  private final case class PiedPiper(employee: Employee) extends CamelCasedJsonWritable[PiedPiper]
+  private final case class PiedPiper(employeeWithEquity: Employee) extends SnakeCasedJsonWritable[PiedPiper]
 
-  private object PiedPiper extends CamelCasedJsonWritableCompanionLike[PiedPiper]
+  private object PiedPiper extends JsonWritableCompanionLike[PiedPiper]
 }

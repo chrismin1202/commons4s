@@ -3,7 +3,7 @@ import Dependencies._
 organization := "com.chrism"
 name := "commons4s"
 
-version := "0.0.1"
+version := "0.0.2"
 
 scalaVersion := "2.12.10"
 
