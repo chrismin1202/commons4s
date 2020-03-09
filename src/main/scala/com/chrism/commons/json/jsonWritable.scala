@@ -180,7 +180,8 @@ trait JsonWritable[+A] {
   */
 trait CamelCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Camel
+  @transient
+  override protected final lazy val jsonLetterCase: JsonLetterCase = JsonLetterCase.Camel
 }
 
 /** A trait for serializing as JSON in snake_casing.
@@ -190,7 +191,8 @@ trait CamelCasedJsonWritable[+A] extends JsonWritable[A] {
 
 trait SnakeCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Snake
+  @transient
+  override protected final lazy val jsonLetterCase: JsonLetterCase = JsonLetterCase.Snake
 }
 
 /** A trait for serializing as JSON in PascalCasing.
@@ -199,7 +201,8 @@ trait SnakeCasedJsonWritable[+A] extends JsonWritable[A] {
   */
 trait PascalCasedJsonWritable[+A] extends JsonWritable[A] {
 
-  override protected final val jsonLetterCase: JsonLetterCase = JsonLetterCase.Pascal
+  @transient
+  override protected final lazy val jsonLetterCase: JsonLetterCase = JsonLetterCase.Pascal
 }
 
 trait JsonWritableCompanionLike[A <: JsonWritable[A]] {
