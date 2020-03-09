@@ -33,7 +33,6 @@ import org.json4s.{
   JString,
   JValue,
   JsonInput,
-  MappingException,
   ReaderInput,
   StreamInput,
   StringInput
@@ -128,100 +127,160 @@ object JsonUtils {
       case other => throw new UnsupportedOperationException(s"$other is not a supported data type!")
     }
 
-  def convertToJBool(jv: JValue): JBool =
+  def convertJValueToJBool(jv: JValue): JBool =
     jv match {
       case jBool: JBool => jBool
-      case other        => throw new MappingException(s"Expected JBool, but $other found!")
+      case other        => throw new IllegalArgumentException(s"Expected JBool, but $other found!")
     }
 
-  def convertToJBoolOrNone(jv: JValue): Option[JBool] =
+  def convertJValueToJBoolOrNone(jv: JValue): Option[JBool] =
     jv match {
       case jBool: JBool => Some(jBool)
       case _            => None
     }
 
-  def convertToJInt(jv: JValue): JInt =
+  def convertJValueToJInt(jv: JValue): JInt =
     jv match {
       case jInt: JInt => jInt
-      case other      => throw new MappingException(s"Expected JInt, but $other found!")
+      case other      => throw new IllegalArgumentException(s"Expected JInt, but $other found!")
     }
 
-  def convertToJIntOrNone(jv: JValue): Option[JInt] =
+  def convertJValueToJIntOrNone(jv: JValue): Option[JInt] =
     jv match {
       case jInt: JInt => Some(jInt)
       case _          => None
     }
 
-  def convertToJLong(jv: JValue): JLong =
+  def convertJValueToJLong(jv: JValue): JLong =
     jv match {
       case jLong: JLong => jLong
-      case other        => throw new MappingException(s"Expected JLong, but $other found!")
+      case other        => throw new IllegalArgumentException(s"Expected JLong, but $other found!")
     }
 
-  def convertToJLongOrNone(jv: JValue): Option[JLong] =
+  def convertJValueToJLongOrNone(jv: JValue): Option[JLong] =
     jv match {
       case jLong: JLong => Some(jLong)
       case _            => None
     }
 
-  def convertToJDouble(jv: JValue): JDouble =
+  def convertJValueToJDouble(jv: JValue): JDouble =
     jv match {
       case jDouble: JDouble => jDouble
-      case other            => throw new MappingException(s"Expected JDouble, but $other found!")
+      case other            => throw new IllegalArgumentException(s"Expected JDouble, but $other found!")
     }
 
-  def convertToJDoubleOrNone(jv: JValue): Option[JDouble] =
+  def convertJValueToJDoubleOrNone(jv: JValue): Option[JDouble] =
     jv match {
       case jDouble: JDouble => Some(jDouble)
       case _                => None
     }
 
-  def convertToJDecimal(jv: JValue): JDecimal =
+  def convertJValueToJDecimal(jv: JValue): JDecimal =
     jv match {
       case jDecimal: JDecimal => jDecimal
-      case other              => throw new MappingException(s"Expected JDecimal, but $other found!")
+      case other              => throw new IllegalArgumentException(s"Expected JDecimal, but $other found!")
     }
 
-  def convertToJDecimalOrNone(jv: JValue): Option[JDecimal] =
+  def convertJValueToJDecimalOrNone(jv: JValue): Option[JDecimal] =
     jv match {
       case jDecimal: JDecimal => Some(jDecimal)
       case _                  => None
     }
 
-  def convertToJString(jv: JValue): JString =
+  def convertJValueToJString(jv: JValue): JString =
     jv match {
       case jStr: JString => jStr
-      case other         => throw new MappingException(s"Expected JString, but $other found!")
+      case other         => throw new IllegalArgumentException(s"Expected JString, but $other found!")
     }
 
-  def convertToJStringOrNone(jv: JValue): Option[JString] =
+  def convertJValueToJStringOrNone(jv: JValue): Option[JString] =
     jv match {
       case jStr: JString => Some(jStr)
       case _             => None
     }
 
-  def convertToJArray(jv: JValue): JArray =
+  def convertJValueToJArray(jv: JValue): JArray =
     jv match {
       case jArr: JArray => jArr
-      case other        => throw new MappingException(s"Expected JArray, but $other found!")
+      case other        => throw new IllegalArgumentException(s"Expected JArray, but $other found!")
     }
 
-  def convertToJArrayOrNone(jv: JValue): Option[JArray] =
+  def convertJValueToJArrayOrNone(jv: JValue): Option[JArray] =
     jv match {
       case jArr: JArray => Some(jArr)
       case _            => None
     }
 
-  def convertToJObject(jv: JValue): JObject =
+  def convertJValueToJObject(jv: JValue): JObject =
     jv match {
       case jObj: JObject => jObj
-      case other         => throw new MappingException(s"Expected JObject, but $other found!")
+      case other         => throw new IllegalArgumentException(s"Expected JObject, but $other found!")
     }
 
-  def convertToJObjectOrNone(jv: JValue): Option[JObject] =
+  def convertJValueToJObjectOrNone(jv: JValue): Option[JObject] =
     jv match {
       case jObj: JObject => Some(jObj)
       case _             => None
+    }
+
+  def convertJsValueToJsBoolean(jsv: JsValue): JsBoolean =
+    jsv match {
+      case jsBool: JsBoolean => jsBool
+      case other             => throw new IllegalArgumentException(s"Expected JsBool, but $other found!")
+    }
+
+  def convertJsValueToJsBooleanOrNone(jsv: JsValue): Option[JsBoolean] =
+    jsv match {
+      case jsBool: JsBoolean => Some(jsBool)
+      case _                 => None
+    }
+
+  def convertJsValueToJsNumber(jsv: JsValue): JsNumber =
+    jsv match {
+      case jsNum: JsNumber => jsNum
+      case other           => throw new IllegalArgumentException(s"Expected JsNumber, but $other found!")
+    }
+
+  def convertJsValueToJsNumberOrNone(jsv: JsValue): Option[JsNumber] =
+    jsv match {
+      case jsNum: JsNumber => Some(jsNum)
+      case _               => None
+    }
+
+  def convertJsValueToJsString(jsv: JsValue): JsString =
+    jsv match {
+      case jsStr: JsString => jsStr
+      case other           => throw new IllegalArgumentException(s"Expected JsString, but $other found!")
+    }
+
+  def convertJsValueToJsStringOrNone(jsv: JsValue): Option[JsString] =
+    jsv match {
+      case jsStr: JsString => Some(jsStr)
+      case _               => None
+    }
+
+  def convertJsValueToJsArray(jsv: JsValue): JsArray =
+    jsv match {
+      case jsArr: JsArray => jsArr
+      case other          => throw new IllegalArgumentException(s"Expected JsArray, but $other found!")
+    }
+
+  def convertJsValueToJsArrayOrNone(jsv: JsValue): Option[JsArray] =
+    jsv match {
+      case jsArr: JsArray => Some(jsArr)
+      case _              => None
+    }
+
+  def convertJsValueToJsObject(jsv: JsValue): JsObject =
+    jsv match {
+      case jsObj: JsObject => jsObj
+      case other           => throw new IllegalArgumentException(s"Expected JsObject, but $other found!")
+    }
+
+  def convertJsValueToJsObjectOrNone(jsv: JsValue): Option[JsObject] =
+    jsv match {
+      case jsObj: JsObject => Some(jsObj)
+      case _               => None
     }
 
   def writeJValueAsJson(jv: JValue)(implicit formats: Formats): String =
@@ -291,42 +350,62 @@ object JsonUtils {
 
       def asJsValue: JsValue = convertToJsValue(jv)
 
-      def asJBool: JBool = convertToJBool(jv)
+      def asJBool: JBool = convertJValueToJBool(jv)
 
-      def asJBoolOrNone: Option[JBool] = convertToJBoolOrNone(jv)
+      def asJBoolOrNone: Option[JBool] = convertJValueToJBoolOrNone(jv)
 
-      def asJInt: JInt = convertToJInt(jv)
+      def asJInt: JInt = convertJValueToJInt(jv)
 
-      def asJIntOrNone: Option[JInt] = convertToJIntOrNone(jv)
+      def asJIntOrNone: Option[JInt] = convertJValueToJIntOrNone(jv)
 
-      def asJLong: JLong = convertToJLong(jv)
+      def asJLong: JLong = convertJValueToJLong(jv)
 
-      def asJLongOrNone: Option[JLong] = convertToJLongOrNone(jv)
+      def asJLongOrNone: Option[JLong] = convertJValueToJLongOrNone(jv)
 
-      def asJDouble: JDouble = convertToJDouble(jv)
+      def asJDouble: JDouble = convertJValueToJDouble(jv)
 
-      def asJDoubleOrNone: Option[JDouble] = convertToJDoubleOrNone(jv)
+      def asJDoubleOrNone: Option[JDouble] = convertJValueToJDoubleOrNone(jv)
 
-      def asJDecimal: JDecimal = convertToJDecimal(jv)
+      def asJDecimal: JDecimal = convertJValueToJDecimal(jv)
 
-      def asJDecimalOrNone: Option[JDecimal] = convertToJDecimalOrNone(jv)
+      def asJDecimalOrNone: Option[JDecimal] = convertJValueToJDecimalOrNone(jv)
 
-      def asJString: JString = convertToJString(jv)
+      def asJString: JString = convertJValueToJString(jv)
 
-      def asJStringOrNone: Option[JString] = convertToJStringOrNone(jv)
+      def asJStringOrNone: Option[JString] = convertJValueToJStringOrNone(jv)
 
-      def asJArray: JArray = convertToJArray(jv)
+      def asJArray: JArray = convertJValueToJArray(jv)
 
-      def asJArrayOrNone: Option[JArray] = convertToJArrayOrNone(jv)
+      def asJArrayOrNone: Option[JArray] = convertJValueToJArrayOrNone(jv)
 
-      def asJObject: JObject = convertToJObject(jv)
+      def asJObject: JObject = convertJValueToJObject(jv)
 
-      def asJObjectOrNone: Option[JObject] = convertToJObjectOrNone(jv)
+      def asJObjectOrNone: Option[JObject] = convertJValueToJObjectOrNone(jv)
     }
 
     implicit final class JsValueSerializationOps(jsv: JsValue) {
 
       def asJValue: JValue = convertToJValue(jsv)
+
+      def asJsBoolean: JsBoolean = convertJsValueToJsBoolean(jsv)
+
+      def asJsBooleanOrNone: Option[JsBoolean] = convertJsValueToJsBooleanOrNone(jsv)
+
+      def asJsNumber: JsNumber = convertJsValueToJsNumber(jsv)
+
+      def asJsNumberOrNone: Option[JsNumber] = convertJsValueToJsNumberOrNone(jsv)
+
+      def asJsString: JsString = convertJsValueToJsString(jsv)
+
+      def asJsStringOrNone: Option[JsString] = convertJsValueToJsStringOrNone(jsv)
+
+      def asJsArray: JsArray = convertJsValueToJsArray(jsv)
+
+      def asJsArrayOrNone: Option[JsArray] = convertJsValueToJsArrayOrNone(jsv)
+
+      def asJsObject: JsObject = convertJsValueToJsObject(jsv)
+
+      def asJsObjectOrNone: Option[JsObject] = convertJsValueToJsObjectOrNone(jsv)
     }
   }
 }

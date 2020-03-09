@@ -19,7 +19,7 @@ import java.{lang => jl, math => jm}
 import com.chrism.commons.FunTestSuite
 import com.chrism.commons.json.json4s.Json4sFormatsLike
 import org.json4s.{JArray, JBool, JDecimal, JDouble, JInt, JLong, JNull, JObject, JString, JValue}
-import play.api.libs.json.{JsArray, JsBoolean, JsNull, JsNumber, JsObject, JsString}
+import play.api.libs.json.{JsArray, JsBoolean, JsNull, JsNumber, JsObject, JsString, JsValue}
 
 final class JsonUtilsTest extends FunTestSuite with Json4sFormatsLike {
 
@@ -183,6 +183,31 @@ final class JsonUtilsTest extends FunTestSuite with Json4sFormatsLike {
   test("converting from JValue to JObject") {
     val jv: JValue = JObject("ks" -> JString("s"), "ki" -> JInt(1), "kl" -> JLong(1L))
     assert(jv.asJObject === JObject("ks" -> JString("s"), "ki" -> JInt(1), "kl" -> JLong(1L)))
+  }
+
+  test("converting from JsValue to JsBoolean") {
+    val jsv: JsValue = JsBoolean(true)
+    assert(jsv.asJsBoolean === JsBoolean(true))
+  }
+
+  test("converting from JsValue to JsNumber") {
+    val jsv: JsValue = JsNumber(1)
+    assert(jsv.asJsNumber === JsNumber(1))
+  }
+
+  test("converting from JsValue to JsString") {
+    val jsv: JsValue = JsString("s")
+    assert(jsv.asJsString === JsString("s"))
+  }
+
+  test("converting from JsValue to JsArray") {
+    val jsv: JsValue = JsArray(Seq(JsString("one"), JsString("two"), JsString("three")))
+    assert(jsv.asJsArray === JsArray(Seq(JsString("one"), JsString("two"), JsString("three"))))
+  }
+
+  test("converting from JsValue to JsObject") {
+    val jsv: JsValue = JsObject(Seq("kn" -> JsNumber(1), "ks" -> JsString("s")))
+    assert(jsv.asJsObject === JsObject(Seq("kn" -> JsNumber(1), "ks" -> JsString("s"))))
   }
 
   test("writing JValue as JSON") {
