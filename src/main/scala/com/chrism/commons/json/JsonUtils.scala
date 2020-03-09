@@ -27,11 +27,13 @@ import org.json4s.{
   JDouble,
   JInt,
   JLong,
+  JNothing,
   JNull,
   JObject,
   JString,
   JValue,
   JsonInput,
+  MappingException,
   ReaderInput,
   StreamInput,
   StringInput
@@ -99,34 +101,133 @@ object JsonUtils {
 
   def convertToJValue(jsv: JsValue): JValue =
     jsv match {
-      case JsNull       => JNull
-      case JsBoolean(b) => JBool(b)
-      case JsNumber(n)  => JDecimal(n)
-      case JsString(s)  => JString(s)
-      case JsArray(a)   => if (a.isEmpty) JNull else JArray(a.map(convertToJValue).toList)
-      case JsObject(o)  => if (o.isEmpty) JNull else JObject(o.toSeq.map(kv => kv._1 -> convertToJValue(kv._2)): _*)
-      case other        => throw new UnsupportedOperationException(s"$other is not a supported data type!")
+      case JsNull            => JNull
+      case jsBool: JsBoolean => JBool(jsBool.value)
+      case jsNum: JsNumber   => JDecimal(jsNum.value)
+      case jsStr: JsString   => JString(jsStr.value)
+      case jsArr: JsArray    => if (jsArr.value.isEmpty) JNothing else JArray(jsArr.value.map(convertToJValue).toList)
+      case jsObj: JsObject =>
+        if (jsObj.value.isEmpty) JNothing
+        else JObject(jsObj.value.toSeq.map(kv => kv._1 -> convertToJValue(kv._2)): _*)
+      case other => throw new UnsupportedOperationException(s"$other is not a supported data type!")
     }
 
   def convertToJsValue(jv: JValue): JsValue =
     jv match {
-      case JNull         => JsNull
-      case JBool(b)      => JsBoolean(b)
-      case JInt(i)       => JsNumber(BigDecimal(i))
-      case JLong(l)      => JsNumber(BigDecimal(l))
-      case JDouble(d)    => JsNumber(d)
-      case JDecimal(dec) => JsNumber(dec)
-      case JString(s)    => JsString(s)
-      case JArray(a)     => if (a.isEmpty) JsNull else JsArray(a.map(convertToJsValue))
-      case JObject(o)    => if (o.isEmpty) JsNull else JsObject(o.map(kv => kv._1 -> convertToJsValue(kv._2)).toMap)
-      case other         => throw new UnsupportedOperationException(s"$other is not a supported data type!")
+      case JNothing | JNull => JsNull
+      case jBool: JBool     => JsBoolean(jBool.value)
+      case jInt: JInt       => JsNumber(BigDecimal(jInt.num))
+      case jLong: JLong     => JsNumber(BigDecimal(jLong.num))
+      case jDouble: JDouble => JsNumber(jDouble.num)
+      case jDec: JDecimal   => JsNumber(jDec.num)
+      case jStr: JString    => JsString(jStr.s)
+      case jArr: JArray     => if (jArr.arr.isEmpty) JsNull else JsArray(jArr.arr.map(convertToJsValue))
+      case jObj: JObject =>
+        if (jObj.obj.isEmpty) JsNull
+        else JsObject(jObj.obj.map(kv => kv._1 -> convertToJsValue(kv._2)).toMap)
+      case other => throw new UnsupportedOperationException(s"$other is not a supported data type!")
+    }
+
+  def convertToJBool(jv: JValue): JBool =
+    jv match {
+      case jBool: JBool => jBool
+      case other        => throw new MappingException(s"Expected JBool, but $other found!")
+    }
+
+  def convertToJBoolOrNone(jv: JValue): Option[JBool] =
+    jv match {
+      case jBool: JBool => Some(jBool)
+      case _            => None
+    }
+
+  def convertToJInt(jv: JValue): JInt =
+    jv match {
+      case jInt: JInt => jInt
+      case other      => throw new MappingException(s"Expected JInt, but $other found!")
+    }
+
+  def convertToJIntOrNone(jv: JValue): Option[JInt] =
+    jv match {
+      case jInt: JInt => Some(jInt)
+      case _          => None
+    }
+
+  def convertToJLong(jv: JValue): JLong =
+    jv match {
+      case jLong: JLong => jLong
+      case other        => throw new MappingException(s"Expected JLong, but $other found!")
+    }
+
+  def convertToJLongOrNone(jv: JValue): Option[JLong] =
+    jv match {
+      case jLong: JLong => Some(jLong)
+      case _            => None
+    }
+
+  def convertToJDouble(jv: JValue): JDouble =
+    jv match {
+      case jDouble: JDouble => jDouble
+      case other            => throw new MappingException(s"Expected JDouble, but $other found!")
+    }
+
+  def convertToJDoubleOrNone(jv: JValue): Option[JDouble] =
+    jv match {
+      case jDouble: JDouble => Some(jDouble)
+      case _                => None
+    }
+
+  def convertToJDecimal(jv: JValue): JDecimal =
+    jv match {
+      case jDecimal: JDecimal => jDecimal
+      case other              => throw new MappingException(s"Expected JDecimal, but $other found!")
+    }
+
+  def convertToJDecimalOrNone(jv: JValue): Option[JDecimal] =
+    jv match {
+      case jDecimal: JDecimal => Some(jDecimal)
+      case _                  => None
+    }
+
+  def convertToJString(jv: JValue): JString =
+    jv match {
+      case jStr: JString => jStr
+      case other         => throw new MappingException(s"Expected JString, but $other found!")
+    }
+
+  def convertToJStringOrNone(jv: JValue): Option[JString] =
+    jv match {
+      case jStr: JString => Some(jStr)
+      case _             => None
+    }
+
+  def convertToJArray(jv: JValue): JArray =
+    jv match {
+      case jArr: JArray => jArr
+      case other        => throw new MappingException(s"Expected JArray, but $other found!")
+    }
+
+  def convertToJArrayOrNone(jv: JValue): Option[JArray] =
+    jv match {
+      case jArr: JArray => Some(jArr)
+      case _            => None
+    }
+
+  def convertToJObject(jv: JValue): JObject =
+    jv match {
+      case jObj: JObject => jObj
+      case other         => throw new MappingException(s"Expected JObject, but $other found!")
+    }
+
+  def convertToJObjectOrNone(jv: JValue): Option[JObject] =
+    jv match {
+      case jObj: JObject => Some(jObj)
+      case _             => None
     }
 
   def writeJValueAsJson(jv: JValue)(implicit formats: Formats): String =
     jv match {
-      case null  => null
-      case JNull => null
-      case other => Serialization.write(other)
+      case null | JNothing | JNull => null
+      case other                   => Serialization.write(other)
     }
 
   def writeJValueAsJsonWithLetterCase(jv: JValue, jsonCase: JsonLetterCase)(implicit formats: Formats): String =
@@ -172,12 +273,13 @@ object JsonUtils {
 
   private def isJsonInputNullOrEmpty(json: JsonInput): Boolean =
     json match {
-      case null           => true
-      case StringInput(s) => StringUtils.isBlank(s) || s == EmptyJsonArray || s == EmptyJsonObject
-      case ReaderInput(r) => r == null
-      case StreamInput(s) => s == null
-      case FileInput(f)   => f == null
-      case _              => false
+      case null => true
+      case strIn: StringInput =>
+        StringUtils.isBlank(strIn.string) || strIn.string == EmptyJsonArray || strIn.string == EmptyJsonObject
+      case rIn: ReaderInput => rIn.reader == null
+      case sIn: StreamInput => sIn.stream == null
+      case fIn: FileInput   => fIn.file == null
+      case _                => false
     }
 
   private def nonEmptyJsonInputOrNone(json: JsonInput): Option[JsonInput] =
@@ -188,6 +290,38 @@ object JsonUtils {
     implicit final class JValueSerializationOps(jv: JValue) {
 
       def asJsValue: JsValue = convertToJsValue(jv)
+
+      def asJBool: JBool = convertToJBool(jv)
+
+      def asJBoolOrNone: Option[JBool] = convertToJBoolOrNone(jv)
+
+      def asJInt: JInt = convertToJInt(jv)
+
+      def asJIntOrNone: Option[JInt] = convertToJIntOrNone(jv)
+
+      def asJLong: JLong = convertToJLong(jv)
+
+      def asJLongOrNone: Option[JLong] = convertToJLongOrNone(jv)
+
+      def asJDouble: JDouble = convertToJDouble(jv)
+
+      def asJDoubleOrNone: Option[JDouble] = convertToJDoubleOrNone(jv)
+
+      def asJDecimal: JDecimal = convertToJDecimal(jv)
+
+      def asJDecimalOrNone: Option[JDecimal] = convertToJDecimalOrNone(jv)
+
+      def asJString: JString = convertToJString(jv)
+
+      def asJStringOrNone: Option[JString] = convertToJStringOrNone(jv)
+
+      def asJArray: JArray = convertToJArray(jv)
+
+      def asJArrayOrNone: Option[JArray] = convertToJArrayOrNone(jv)
+
+      def asJObject: JObject = convertToJObject(jv)
+
+      def asJObjectOrNone: Option[JObject] = convertToJObjectOrNone(jv)
     }
 
     implicit final class JsValueSerializationOps(jsv: JsValue) {

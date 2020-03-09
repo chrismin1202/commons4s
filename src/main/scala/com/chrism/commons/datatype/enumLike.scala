@@ -65,8 +65,7 @@ trait EnumLikeCompanionLike[E <: EnumLike] {
             case _ =>
               val head = vs.head
               vs.tail.forall(!matches(head, _))
-          }
-        ),
+          }),
       "All names must be unique!"
     )
     // Require all ordinals to be unique

@@ -27,8 +27,7 @@ final class EnumLikeNameSerializer[E <: EnumLike, C <: EnumLikeCompanionLike[E]]
         case raw: JString => companion.valueOf(raw.s)
       }, {
         case e: E => JString(e.name)
-      })
-    )
+      }))
 
 object EnumLikeNameSerializer {
 
@@ -51,8 +50,7 @@ final class EnumLikeNameKeySerializer[E <: EnumLike, C <: EnumLikeCompanionLike[
         case raw: String => companion.valueOf(raw)
       }, {
         case e: E => e.name
-      })
-    )
+      }))
 
 object EnumLikeNameKeySerializer {
 
@@ -75,8 +73,7 @@ final class EnumLikeOrdinalSerializer[E <: EnumLike, C <: EnumLikeCompanionLike[
         case raw: JInt => companion.valueByOrdinalOf(raw.num.intValue())
       }, {
         case e: E => JInt(BigInt(e.customOrdinal.getOrElse(companion.ordinalOf(e))))
-      })
-    )
+      }))
 
 object EnumLikeOrdinalSerializer {
 
@@ -99,8 +96,7 @@ final class EnumLikeOrdinalKeySerializer[E <: EnumLike, C <: EnumLikeCompanionLi
         case raw: String => companion.valueByOrdinalOf(raw.toInt)
       }, {
         case e: E => e.customOrdinal.getOrElse(companion.ordinalOf(e)).toString
-      })
-    )
+      }))
 
 object EnumLikeOrdinalKeySerializer {
 

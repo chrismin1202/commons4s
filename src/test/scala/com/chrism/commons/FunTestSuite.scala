@@ -176,8 +176,7 @@ abstract class FunTestSuite
                   }
                 case (em, am) => em == am
               }
-          }
-        )
+          })
         .forall(_ == true)
     )
 

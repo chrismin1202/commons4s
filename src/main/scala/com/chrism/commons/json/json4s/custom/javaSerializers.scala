@@ -28,8 +28,7 @@ case object BigIntegerSerializer
         case jDec: JDecimal => jDec.num.toBigInt().bigInteger
       }, {
         case bigInt: jm.BigInteger => JDecimal(new jm.BigDecimal(bigInt))
-      })
-    )
+      }))
 
 case object BigIntegerKeySerializer
     extends CustomKeySerializer[jm.BigInteger](_ =>
@@ -37,8 +36,7 @@ case object BigIntegerKeySerializer
         case s: String => new jm.BigInteger(s)
       }, {
         case bigInt: jm.BigInteger => bigInt.toString
-      })
-    )
+      }))
 
 /** A [[CustomSerializer]] for serializing/deserializing [[LocalDate]] to/from ISO-8601 formatted string. */
 case object LocalDateSerializer
@@ -47,8 +45,7 @@ case object LocalDateSerializer
         case jStr: JString => LocalDate.parse(jStr.s)
       }, {
         case date: LocalDate => JString(date.toString)
-      })
-    )
+      }))
 
 /** A [[CustomKeySerializer]] serializing/deserializing [[LocalDate]] to/from ISO-8601 formatted string
   * when used as a key in map-like object.
@@ -59,8 +56,7 @@ case object LocalDateKeySerializer
         case s: String => LocalDate.parse(s)
       }, {
         case date: LocalDate => date.toString
-      })
-    )
+      }))
 
 /** A [[CustomSerializer]] for serializing/deserializing [[LocalDateTime]] to/from ISO-8601 formatted string. */
 case object LocalDateTimeSerializer
@@ -69,8 +65,7 @@ case object LocalDateTimeSerializer
         case jStr: JString => LocalDateTime.parse(jStr.s)
       }, {
         case date: LocalDateTime => JString(date.toString)
-      })
-    )
+      }))
 
 /** A [[CustomKeySerializer]] serializing/deserializing [[LocalDateTime]] to/from ISO-8601 formatted string
   * when used as a key in map-like object.
@@ -81,5 +76,4 @@ case object LocalDateTimeKeySerializer
         case s: String => LocalDateTime.parse(s)
       }, {
         case date: LocalDateTime => date.toString
-      })
-    )
+      }))

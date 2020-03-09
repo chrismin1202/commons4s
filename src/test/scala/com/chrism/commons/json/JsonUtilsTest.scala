@@ -18,11 +18,12 @@ import java.{lang => jl, math => jm}
 
 import com.chrism.commons.FunTestSuite
 import com.chrism.commons.json.json4s.Json4sFormatsLike
-import org.json4s.{JArray, JBool, JDecimal, JDouble, JInt, JLong, JNull, JObject, JString}
+import org.json4s.{JArray, JBool, JDecimal, JDouble, JInt, JLong, JNull, JObject, JString, JValue}
 import play.api.libs.json.{JsArray, JsBoolean, JsNull, JsNumber, JsObject, JsString}
 
 final class JsonUtilsTest extends FunTestSuite with Json4sFormatsLike {
 
+  import JsonUtils.implicits._
   import JsonUtilsTest.Foo
 
   test("decomposing a data structure into JValue") {
@@ -142,6 +143,46 @@ final class JsonUtilsTest extends FunTestSuite with Json4sFormatsLike {
       "mapOpt" -> JObject("your" -> JDecimal(1L), "mom" -> JDecimal(2L)),
     )
     assert(JsonUtils.convertToJValue(jsv) === expected)
+  }
+
+  test("converting from JValue to JBool") {
+    val jv: JValue = JBool(false)
+    assert(jv.asJBool === JBool(false))
+  }
+
+  test("converting from JValue to JInt") {
+    val jv: JValue = JInt(1)
+    assert(jv.asJInt === JInt(1))
+  }
+
+  test("converting from JValue to JLong") {
+    val jv: JValue = JLong(1L)
+    assert(jv.asJLong === JLong(1L))
+  }
+
+  test("converting from JValue to JDouble") {
+    val jv: JValue = JDouble(1.0)
+    assert(jv.asJDouble === JDouble(1.0))
+  }
+
+  test("converting from JValue to JDecimal") {
+    val jv: JValue = JDecimal(BigDecimal(1.0))
+    assert(jv.asJDecimal === JDecimal(BigDecimal(1.0)))
+  }
+
+  test("converting from JValue to JString") {
+    val jv: JValue = JString("s")
+    assert(jv.asJString === JString("s"))
+  }
+
+  test("converting from JValue to JArray") {
+    val jv: JValue = JArray(List(JInt(1), JInt(2), JInt(3)))
+    assert(jv.asJArray === JArray(List(JInt(1), JInt(2), JInt(3))))
+  }
+
+  test("converting from JValue to JObject") {
+    val jv: JValue = JObject("ks" -> JString("s"), "ki" -> JInt(1), "kl" -> JLong(1L))
+    assert(jv.asJObject === JObject("ks" -> JString("s"), "ki" -> JInt(1), "kl" -> JLong(1L)))
   }
 
   test("writing JValue as JSON") {
