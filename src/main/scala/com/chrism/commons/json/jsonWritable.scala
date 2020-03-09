@@ -44,7 +44,9 @@ trait JsonWritable[+A] {
     * @tparam B the type parameter that has [[A]] as a lower type bound
     * @return the [[JValue]] converted from the object
     */
-  def toJValue[B >: A](implicit formats: Formats, m: Manifest[B]): JValue = JsonUtils.decomposeToJValue(this)
+  def toJValue[B >: A](implicit formats: Formats, m: Manifest[B]): JValue =
+    if (classLetterCase == jsonLetterCase) JsonUtils.decomposeToJValue(this)
+    else JsonUtils.decomposeToJValueWithLetterCase(this)(formats, jsonLetterCase)
 
   final def toJValueWithLetterCase[B >: A](
     jsonCase: JsonLetterCase
