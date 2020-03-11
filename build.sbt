@@ -21,6 +21,16 @@ version := "0.0.5"
 
 scalaVersion := "2.12.10"
 
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
+
+homepage := Some(url("https://github.com/chrismin1202/commons4s"))
+scmInfo := Some(ScmInfo(url("https://github.com/chrismin1202/commons4s"), "git@github.com:chrismin1202/commons4s.git"))
+developers := List(
+  Developer("chrismin1202", "Donatello", "chrism.1202@gmail.com", url("https://github.com/chrismin1202")),
+)
+
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
+
 parallelExecution in Test := false
 
 fork in Test := true
@@ -59,16 +69,9 @@ assemblyMergeStrategy in assembly := {
   case _                                             => MergeStrategy.first
 }
 
-homepage := Some(url("https://github.com/chrismin1202/commons4s"))
-scmInfo := Some(ScmInfo(url("https://github.com/chrismin1202/commons4s"), "git@github.com:chrismin1202/commons4s.git"))
-developers := List(
-  Developer("chrismin1202", "Donatello", "chrism.1202@gmail.com", url("https://github.com/chrismin1202")),
-)
-licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
 publishMavenStyle := true
 publishArtifact in Test := true
 updateOptions := updateOptions.value.withGigahorse(false)
-credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 publishTo := Some(
   "chrism commons4s GitHub Package Registry" at "https://maven.pkg.github.com/chrismin1202/commons4s"
 )
