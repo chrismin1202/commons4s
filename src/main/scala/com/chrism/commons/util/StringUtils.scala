@@ -21,9 +21,14 @@ import scala.util.matching.Regex
 /** Object for string related utility methods and a proxy for [[l3.StringUtils]]. */
 object StringUtils {
 
-  val LineSeparator: String = System.lineSeparator()
-  private val LineSeparatorRegex: Regex = new Regex(LineSeparator)
-  private val WhitespaceRegex: Regex = "\\s+".r
+  @transient
+  lazy val lineSeparator: String = System.lineSeparator()
+
+  @transient
+  private lazy val lineSeparatorRegex: Regex = new Regex(lineSeparator)
+
+  @transient
+  private lazy val whitespaceRegex: Regex = "\\s+".r
 
   /** Checks if the given [[CharSequence]] is {{{ null }}}, empty.
     *
@@ -206,12 +211,12 @@ object StringUtils {
     }
 
   def replaceAllLineSeparators(input: String, replacement: String): String =
-    LineSeparatorRegex.replaceAllIn(input, replacement)
+    lineSeparatorRegex.replaceAllIn(input, replacement)
 
   def stripAllLineSeparators(input: String): String = replaceAllLineSeparators(input, "")
 
   def replaceAllWhitespaces(input: String, replacement: String): String =
-    WhitespaceRegex.replaceAllIn(input, replacement)
+    whitespaceRegex.replaceAllIn(input, replacement)
 
   def stripAllWhitespaces(input: String): String = replaceAllWhitespaces(input, "")
 
