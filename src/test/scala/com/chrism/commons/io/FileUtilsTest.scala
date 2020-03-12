@@ -61,7 +61,7 @@ final class FileUtilsTest extends FunTestSuite {
     assert(tempDir.notExists())
   }
 
-  private[this] def testResourceAsStream(/* IO */ ): jio.InputStream = getClass.getResourceAsStream(ResourcePath)
+  private[this] def testResourceAsStream(): jio.InputStream = getClass.getResourceAsStream(ResourcePath)
 }
 
 private[this] object FileUtilsTest {

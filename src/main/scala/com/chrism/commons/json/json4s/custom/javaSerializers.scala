@@ -15,7 +15,7 @@
 package com.chrism.commons.json.json4s.custom
 
 import java.{math => jm}
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, Year}
 
 import org.json4s.{JDecimal, JString}
 import org.json4s.{CustomKeySerializer, CustomSerializer}
@@ -64,7 +64,7 @@ case object LocalDateTimeSerializer
       ({
         case jStr: JString => LocalDateTime.parse(jStr.s)
       }, {
-        case date: LocalDateTime => JString(date.toString)
+        case dt: LocalDateTime => JString(dt.toString)
       }))
 
 /** A [[CustomKeySerializer]] serializing/deserializing [[LocalDateTime]] to/from ISO-8601 formatted string
@@ -75,5 +75,25 @@ case object LocalDateTimeKeySerializer
       ({
         case s: String => LocalDateTime.parse(s)
       }, {
-        case date: LocalDateTime => date.toString
+        case dt: LocalDateTime => dt.toString
+      }))
+
+/** A [[CustomSerializer]] for serializing/deserializing [[Year]] to/from ISO-8601 formatted string. */
+case object YearSerializer
+    extends CustomSerializer[Year](_ =>
+      ({
+        case jStr: JString => Year.parse(jStr.s)
+      }, {
+        case year: Year => JString(year.toString)
+      }))
+
+/** A [[CustomKeySerializer]] serializing/deserializing [[Year]] to/from ISO-8601 formatted string
+  * when used as a key in map-like object.
+  */
+case object YearKeySerializer
+    extends CustomKeySerializer[Year](_ =>
+      ({
+        case s: String => Year.parse(s)
+      }, {
+        case year: Year => year.toString
       }))

@@ -20,7 +20,9 @@ import com.chrism.commons.json.json4s.custom.{
   LocalDateKeySerializer,
   LocalDateSerializer,
   LocalDateTimeKeySerializer,
-  LocalDateTimeSerializer
+  LocalDateTimeSerializer,
+  YearKeySerializer,
+  YearSerializer
 }
 import org.json4s.{DefaultFormats, Formats}
 
@@ -33,7 +35,7 @@ trait Json4sFormatsLike {
     *
     * @return the [[Formats]]
     */
-  protected def loadFormats(/* potential IO */ ): Formats =
+  protected def loadFormats(): Formats =
     DefaultFormats ++
       org.json4s.ext.JavaTypesSerializers.all +
       BigIntegerSerializer +
@@ -41,7 +43,9 @@ trait Json4sFormatsLike {
       LocalDateSerializer +
       LocalDateKeySerializer +
       LocalDateTimeSerializer +
-      LocalDateTimeKeySerializer
+      LocalDateTimeKeySerializer +
+      YearSerializer +
+      YearKeySerializer
 }
 
 object Json4sFormats extends Json4sFormatsLike {
