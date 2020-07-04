@@ -17,7 +17,7 @@ import Dependencies._
 organization := "com.chrism"
 name := "commons4s"
 
-version := "0.0.8"
+version := "1.0.0"
 
 scalaVersion := "2.12.10"
 
@@ -42,16 +42,6 @@ connectInput in Test := true
 libraryDependencies ++= Seq(
   CommonsLang3,
   CommonsIo,
-  JacksonCore,
-  JacksonAnnotations,
-  JacksonDataTypeJdk8,
-  JacksonDataTypeJsr310,
-  JacksonDatabind,
-  JacksonModuleScala,
-  Json4sNative,
-  Json4sExt,
-  Json4sJackson,
-  PlayJson,
   ScalaXml,
   SaajImpl % Test,
   Scalacheck % Test,
@@ -59,19 +49,27 @@ libraryDependencies ++= Seq(
   Specs2Core % Test,
 )
 
-val meta = "META.INF(.)*".r
-assemblyMergeStrategy in assembly := {
-  case PathList("javax", "servlet", _ @_*)           => MergeStrategy.first
-  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
-  case n if n.startsWith("reference.conf")           => MergeStrategy.concat
-  case n if n.endsWith(".conf")                      => MergeStrategy.concat
-  case meta(_)                                       => MergeStrategy.discard
-  case _                                             => MergeStrategy.first
-}
-
 publishMavenStyle := true
 publishArtifact in Test := true
 updateOptions := updateOptions.value.withGigahorse(false)
 publishTo := Some(
   "chrism commons4s GitHub Package Registry" at "https://maven.pkg.github.com/chrismin1202/commons4s"
 )
+pomExtra :=
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+    <scm>
+      <url>git@github.com:chrismin1202/commons4s.git</url>
+      <connection>scm:git:git@github.com:chrismin1202/commons4s.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>donatello</id>
+        <name>Donatello</name>
+      </developer>
+    </developers>
