@@ -16,6 +16,7 @@ package com.chrism.commons
 
 import java.{lang => jl, math => jm}
 
+import com.chrism.commons.util.NumberUtils
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite, Matchers}
@@ -97,6 +98,23 @@ abstract class FunTestSuite
     assertBigDecimal(expected, actual.get, tolerance)
   }
 
+  protected final def assertJBigDecimal(
+    expected: jm.BigDecimal,
+    actual: jm.BigDecimal,
+    tolerance: BigDecimal = DefaultBigDecimalTolerance
+  ): scalatest.Assertion = {
+    import NumberUtils.implicits._
+
+    val lowerBound = expected - tolerance
+    val upperBound = expected + tolerance
+    assert(
+      (actual >= lowerBound) && (actual <= upperBound),
+      s"The decimal $actual is not within tolerable range [$lowerBound, $upperBound]")
+  }
+
+  protected final def assertJBigInteger(expected: jm.BigInteger, actual: jm.BigInteger): scalatest.Assertion =
+    assert(NumberUtils.equals(actual, expected))
+
   protected final def assertJFloat(
     expected: Float,
     actual: jl.Float,
@@ -165,15 +183,14 @@ abstract class FunTestSuite
               t match {
                 case (eo: Option[_], ao: Option[_]) =>
                   if (eo == ao) true
-                  else {
-                    // check
-                    if (eo.isDefined && ao.isDefined) {
-                      matchFloatingPoint(eo.getOrFail(), ao.getOrFail()) match {
-                        case Some(result) => result
-                        case _            => t._1 == t._2
-                      }
-                    } else false
-                  }
+                  else
+                  // check
+                  if (eo.isDefined && ao.isDefined)
+                    matchFloatingPoint(eo.getOrFail(), ao.getOrFail()) match {
+                      case Some(result) => result
+                      case _            => t._1 == t._2
+                    }
+                  else false
                 case (em, am) => em == am
               }
           })
