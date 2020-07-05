@@ -40,8 +40,11 @@ javaOptions in Test += "-Djdk.logging.allowStackWalkSearch=true"
 connectInput in Test := true
 
 libraryDependencies ++= Seq(
+  "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   CommonsLang3,
   CommonsIo,
+  LogbackClassic % Runtime,
+  Log4s,
   ScalaXml,
   SaajImpl % Test,
   Scalacheck % Test,
