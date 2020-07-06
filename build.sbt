@@ -17,7 +17,7 @@ import Dependencies._
 organization := "com.chrism"
 name := "commons4s"
 
-version := "1.0.0"
+version := "1.1.0"
 
 scalaVersion := "2.12.10"
 
@@ -43,13 +43,14 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   CommonsLang3,
   CommonsIo,
-  LogbackClassic % Runtime,
+  Log4j,
   Log4s,
   ScalaXml,
   SaajImpl % Test,
   Scalacheck % Test,
   Scalatest % Test,
   Specs2Core % Test,
+  LogbackClassic % Test,
 )
 
 publishMavenStyle := true
