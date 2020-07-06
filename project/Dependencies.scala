@@ -25,6 +25,7 @@ object Dependencies {
   val CommonsLang3: ModuleID = "org.apache.commons" % "commons-lang3" % CommonsLang3Version
   val CommonsIo: ModuleID = "commons-io" % "commons-io" % CommonsIoVersion
 
+  val Log4j: ModuleID = "log4j" % "log4j" % "1.2.17"
   val LogbackClassic: ModuleID = "ch.qos.logback" % "logback-classic" % "1.2.3"
   val Log4s: ModuleID = "org.log4s" %% "log4s" % "1.8.2"
 
