@@ -14,9 +14,4 @@
  */
 package com.chrism.commons.log
 
-import org.log4s
-
-trait LoggingLike {
-
-  protected final lazy val logger = log4s.getLogger
-}
+trait LoggingLike extends Log4sLoggingLike with Log4jLoggingLike
