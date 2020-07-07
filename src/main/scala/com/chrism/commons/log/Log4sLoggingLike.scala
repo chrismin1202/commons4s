@@ -14,21 +14,14 @@
  */
 package com.chrism.commons.log
 
-import org.apache.log4j.{Level, Logger}
+import org.log4s
 
-object LoggingConfigurer {
+trait Log4sLoggingLike {
 
-  /** Sets/overrides the logging level for this given logger names.
-    *
-    * @param nameLevels the logger name and logging [[Level]] pairs
-    */
-  def setAllLevels(nameLevels: Seq[(String, Level)]): Unit =
-    nameLevels.foreach { case (name, level) => Logger.getLogger(name).setLevel(level) }
+  /** The default logger */
+  protected final lazy val logger: log4s.Logger = log4s.getLogger
 
-  /** Sets/Overrides the logging level for this given logger names.
-    *
-    * @param nameLevel the logger name logging [[Level]] pair
-    * @param more more logger name and logging [[Level]] pairs
-    */
-  def setLevels(nameLevel: (String, Level), more: (String, Level)*): Unit = setAllLevels(nameLevel +: more)
+  protected final def getOrCreateLog4sLogger(name: String): log4s.Logger = log4s.getLogger(name)
+
+  protected final def getOrCreateLog4sLoggerByClass(clazz: Class[_]): log4s.Logger = log4s.getLogger(clazz)
 }
