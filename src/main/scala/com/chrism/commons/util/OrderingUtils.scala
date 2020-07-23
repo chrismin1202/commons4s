@@ -135,6 +135,16 @@ object OrderingUtils {
     override def compareT(x: js.Timestamp, y: js.Timestamp): Int = x.compareTo(y)
   }
 
+  def optionOrderingOf[T](implicit ordering: Ordering[T]): Ordering[Option[T]] =
+    new OptionOrdering[T] {
+      override def compareT(x: T, y: T): Int = ordering.compare(x, y)
+    }
+
+  def orderedOptionOrderingOf[T <: Ordered[T]]: Ordering[Option[T]] = new OrderedOptionOrdering[T] {}
+
+  def comparableOptionOrderingOf[T <: Comparable[T]]: Ordering[Option[T]] =
+    new ComparableOptionOrdering[T] {}
+
   object implicits {
 
     implicit final val localDateOptionOrdering: Ordering[Option[LocalDate]] = LocalDateOptionOrdering
@@ -165,14 +175,11 @@ object OrderingUtils {
 
     implicit final val sqlTimestampOrdering: Ordering[js.Timestamp] = SqlTimestampOrdering
 
-    implicit final def optionOrdering[T](implicit ordering: Ordering[T]): Ordering[Option[T]] =
-      new OptionOrdering[T] {
-        override def compareT(x: T, y: T): Int = ordering.compare(x, y)
-      }
+    implicit final def newOptionOrdering[T](implicit ordering: Ordering[T]): Ordering[Option[T]] = optionOrderingOf[T]
 
-    implicit final def orderedOptionOrdering[T <: Ordered[T]]: Ordering[Option[T]] = new OrderedOptionOrdering[T] {}
+    implicit final def newOrderedOptionOrdering[T <: Ordered[T]]: Ordering[Option[T]] = orderedOptionOrderingOf[T]
 
-    implicit final def comparableOptionOrdering[T <: Comparable[T]]: Ordering[Option[T]] =
-      new ComparableOptionOrdering[T] {}
+    implicit final def newComparableOptionOrdering[T <: Comparable[T]]: Ordering[Option[T]] =
+      comparableOptionOrderingOf[T]
   }
 }
